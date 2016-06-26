@@ -3,7 +3,7 @@ if !System.get_env("EXERCISM_TEST_EXAMPLES") do
 end
 
 ExUnit.start
-ExUnit.configure exclude: :pending, trace: true
+# ExUnit.configure exclude: :pending, trace: true
 
 defmodule AcronymTest do
   use ExUnit.Case
@@ -30,5 +30,10 @@ defmodule AcronymTest do
   @tag :pending
   test "produces acronyms ignoring punctuation and casing" do
     assert Acronym.abbreviate("Complementary Metal-Oxide semiconductor") === "CMOS"
+  end
+
+  @tag :pending
+  test "produces acronyms from Unicode string" do
+    assert Acronym.abbreviate("Коммунистическая Партия Советского Союза") === "КПСС"
   end
 end
