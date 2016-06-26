@@ -5,7 +5,8 @@ defmodule Acronym do
   """
   @spec abbreviate(String.t()) :: String.t()
   def abbreviate(string) do
-    _abbreviate(string, [], true)
+    Regex.replace(~r/[\s\t]+/, string, " ")
+    |> _abbreviate([], true)
   end
   defp _abbreviate("", acc, _) do
     Enum.join acc
