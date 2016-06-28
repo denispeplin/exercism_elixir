@@ -8,7 +8,11 @@ defmodule RunLengthEncoder do
   """
   @spec encode(String.t) :: String.t
   def encode(string) do
-
+    string
+    |> String.graphemes
+    |> Enum.chunk_by(fn grapheme -> grapheme end)
+    |> Enum.map(fn graphemes -> Enum.join([Enum.count(graphemes), List.first(graphemes)]) end)
+    |> Enum.join
   end
 
   @spec decode(String.t) :: String.t
