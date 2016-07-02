@@ -17,6 +17,22 @@ defmodule RunLengthEncoder do
 
   @spec decode(String.t) :: String.t
   def decode(string) do
+    string
+    |> String.graphemes
+    |> Enum.chunk_by(fn grapheme -> Integer.parse(grapheme) != :error end)
+    |> Enum.map(&Enum.join/1)
+    |> Enum.chunk(2)
+    |> parse_numbers([])
+    |> Enum.reverse
+    |> Enum.join
+  end
 
+  @doc """
+  Converts [["12", "W"], ["3", "A"]] to ["AAA", "WWWWWWWWWWWW"]
+  """
+  defp parse_numbers([], acc), do: acc
+  defp parse_numbers([head | tail], acc) do
+    [num, letter] = head
+    parse_numbers(tail, [String.duplicate(letter, String.to_integer(num)) | acc])
   end
 end
