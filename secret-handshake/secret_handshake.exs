@@ -17,19 +17,23 @@ defmodule SecretHandshake do
   """
   @spec commands(code :: integer) :: list(String.t())
   def commands(code) do
-    0..3
-    |> Enum.map(fn index ->
-      shift = bsl(1, index)
-
-      if (code &&& shift) == shift do
-        Enum.at(@commands, index)
-      end
-    end)
-    |> Enum.filter(& &1)
-    |> reverse(code)
+    do_commands(@commands, code, 0, [])
   end
 
-  defp reverse(list, code) do
-    if (code &&& 0b10000) == 0b10000, do: Enum.reverse(list), else: list
+  def do_commands([], code, index, acc) do
+    if (code &&& 0b10000) == 0b10000, do: acc, else: Enum.reverse(acc)
+  end
+
+  def do_commands([command | tail], code, index, acc) do
+    shift = bsl(1, index)
+
+    acc =
+      if (code &&& shift) == shift do
+        [command | acc]
+      else
+        acc
+      end
+
+    do_commands(tail, code, index + 1, acc)
   end
 end
