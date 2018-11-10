@@ -27,13 +27,10 @@ defmodule SecretHandshake do
   def do_commands([command | tail], code, index, acc) do
     shift = bsl(1, index)
 
-    acc =
-      if (code &&& shift) == shift do
-        [command | acc]
-      else
-        acc
-      end
-
-    do_commands(tail, code, index + 1, acc)
+    if (code &&& shift) == shift do
+      do_commands(tail, code, index + 1, [command | acc])
+    else
+      do_commands(tail, code, index + 1, acc)
+    end
   end
 end
