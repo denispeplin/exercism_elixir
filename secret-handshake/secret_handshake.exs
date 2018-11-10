@@ -1,6 +1,6 @@
 defmodule SecretHandshake do
   use Bitwise
-
+  @commands ["wink", "double blink", "close your eyes", "jump"]
   @doc """
   Determine the actions of a secret handshake based on the binary
   representation of the given `code`.
@@ -17,31 +17,19 @@ defmodule SecretHandshake do
   """
   @spec commands(code :: integer) :: list(String.t())
   def commands(code) do
-    []
-    |> wink(code)
-    |> double_blink(code)
-    |> close_eyes(code)
-    |> jump(code)
+    0..3
+    |> Enum.map(fn index ->
+      shift = bsl(1, index)
+
+      if (code &&& shift) == shift do
+        Enum.at(@commands, index)
+      end
+    end)
+    |> Enum.filter(& &1)
     |> reverse(code)
   end
 
-  defp wink(list, code) do
-    if (code &&& 0b1) == 0b1, do: ["wink" | list], else: list
-  end
-
-  defp double_blink(list, code) do
-    if (code &&& 0b10) == 0b10, do: ["double blink" | list], else: list
-  end
-
-  defp close_eyes(list, code) do
-    if (code &&& 0b100) == 0b100, do: ["close your eyes" | list], else: list
-  end
-
-  defp jump(list, code) do
-    if (code &&& 0b1000) == 0b1000, do: ["jump" | list], else: list
-  end
-
   defp reverse(list, code) do
-    if (code &&& 0b10000) == 0b10000, do: list, else: Enum.reverse(list)
+    if (code &&& 0b10000) == 0b10000, do: Enum.reverse(list), else: list
   end
 end
