@@ -20,7 +20,12 @@ defmodule PigLatin do
     if starts_with_vowel_sound?(phrase) do
       phrase <> "ay"
     else
-      phrase
+      {first, last} =
+        phrase
+        |> String.codepoints()
+        |> Enum.split_while(fn letter -> letter not in @vowel_sounds end)
+
+      Enum.join(last) <> Enum.join(first) <> "ay"
     end
   end
 
