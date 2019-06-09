@@ -1,4 +1,6 @@
 defmodule PigLatin do
+  @vowel_sounds ~w(e o i a u)
+
   @doc """
   Given a `phrase`, translate it a word at a time to Pig Latin.
 
@@ -15,5 +17,14 @@ defmodule PigLatin do
   """
   @spec translate(phrase :: String.t()) :: String.t()
   def translate(phrase) do
+    if starts_with_vowel_sound?(phrase) do
+      phrase <> "ay"
+    else
+      phrase
+    end
+  end
+
+  defp starts_with_vowel_sound?(phrase) do
+    Enum.any?(@vowel_sounds, &String.starts_with?(phrase, &1))
   end
 end
