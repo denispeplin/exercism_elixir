@@ -17,7 +17,10 @@ defmodule PigLatin do
   """
   @spec translate(phrase :: String.t()) :: String.t()
   def translate(phrase) do
-    do_translate(phrase)
+    phrase
+    |> String.split()
+    |> Enum.map(&do_translate/1)
+    |> Enum.join(" ")
   end
 
   defp do_translate(<<first::size(8)>> <> _ = phrase) when first in 'aioue' do
