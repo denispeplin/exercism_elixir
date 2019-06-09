@@ -17,17 +17,32 @@ defmodule PigLatin do
   """
   @spec translate(phrase :: String.t()) :: String.t()
   def translate(phrase) do
-    if starts_with_vowel_sound?(phrase) do
-      phrase <> "ay"
-    else
-      {first, last} =
-        phrase
-        |> String.codepoints()
-        |> Enum.split_while(fn letter -> letter not in @vowel_sounds end)
+    cond do
+      starts_with_vowel_sound?(phrase) ->
+        phrase <> "ay"
 
-      Enum.join(last) <> Enum.join(first) <> "ay"
+      result = translate_qu(phrase) ->
+        result
+
+      true ->
+        {first, last} =
+          phrase
+          |> String.codepoints()
+          |> Enum.split_while(fn letter -> letter not in @vowel_sounds end)
+
+        Enum.join(last) <> Enum.join(first) <> "ay"
     end
   end
+
+  defp translate_qu("qu" <> last) do
+    last <> "qu" <> "ay"
+  end
+
+  defp translate_qu(<<first::size(8), "qu", last::binary>>) do
+    last <> <<first>> <> "qu" <> "ay"
+  end
+
+  defp translate_qu(_), do: false
 
   defp starts_with_vowel_sound?(phrase) do
     Enum.any?(@vowel_sounds, &String.starts_with?(phrase, &1))
