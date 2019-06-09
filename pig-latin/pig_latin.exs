@@ -21,7 +21,7 @@ defmodule PigLatin do
       starts_with_vowel_sound?(phrase) ->
         phrase <> "ay"
 
-      result = translate_qu(phrase) ->
+      result = do_translate(phrase) ->
         result
 
       true ->
@@ -34,15 +34,23 @@ defmodule PigLatin do
     end
   end
 
-  defp translate_qu("qu" <> last) do
+  defp do_translate(<<first::size(8)>> <> last = phrase) when first in 'yx' do
+    if starts_with_vowel_sound?(last) do
+      false
+    else
+      phrase <> "ay"
+    end
+  end
+
+  defp do_translate("qu" <> last) do
     last <> "qu" <> "ay"
   end
 
-  defp translate_qu(<<first::size(8), "qu", last::binary>>) do
+  defp do_translate(<<first::size(8), "qu", last::binary>>) do
     last <> <<first>> <> "qu" <> "ay"
   end
 
-  defp translate_qu(_), do: false
+  defp do_translate(_), do: false
 
   defp starts_with_vowel_sound?(phrase) do
     Enum.any?(@vowel_sounds, &String.starts_with?(phrase, &1))
